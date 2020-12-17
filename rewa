@@ -1,0 +1,29 @@
+ #! /bin/bash
+ 
+if [[ $# -eq 0 ]] ; then
+    echo 'some message'
+    notify-send "Screen was not defined"
+    exit 0
+fi
+ 
+wpath="$( grep -zoP "$1.*slideshow.*\n.*\K\/home.*?\n" $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc |tr '\0' '\n' ; )"
+echo "$wpath"
+filename="$(basename $wpath;)"
+#echo "$filename"
+parentname="$(basename "$(dirname "$wpath")")"
+#echo "$parentname"
+
+DIR="$HOME/Pictures/WALLPAPER_REJECTS/$parentname"
+if [ -d "$DIR" ]; then
+  ### Take action if $DIR exists ###
+  echo "Moving ${filename} to ${DIR}..."
+  notify-send "Moving ${filename} to ${DIR}.."
+  mv $wpath $DIR/$filename
+else
+  echo "${DIR} does not exist, creating it"
+  mkdir --parents "$DIR"
+  echo "Moving ${filename} to ${DIR}..."
+  notify-send "Moving ${filename} to ${DIR}.."
+  mv $wpath $DIR/$filename
+  exit 1
+fi
